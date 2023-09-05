@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}Options Strategy Payoff Viewer{% endblock title %}
+
+{% block content %}
+
+    <section class="section pt-3" style="background-color: #000000"></section>
+    
+    <section class="section">
+
+        <div class="row">
+            <div class="col">
+                <h2 class='text-center'>Covered Call Payoff Viewer</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-auto">
+                <div class="container text-center">
+                    <div style="width: 900; height: 600" id="graph_div">
+                        {% comment %} {{ graph_div|safe }} {% endcomment %}
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col-3">
+                        <span>Symbol: &nbsp</span>
+                    </div>
+                    <div class="col-3">
+                        <input class="param-input" id="product" placeholder='ticker' value='{{ product }}' type='text'></input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>Strike: &nbsp</span>
+                    </div>
+                    <div class="col-3">
+                        <input class="param-input" id="strike" placeholder='' value='{{ strike }}' type='number'></input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>Expiry: &nbsp</span>
+                    </div>
+                    <div class="col-3">
+                        <input class="param-input" id="expiry" placeholder='YYYY-MM-DD' value='{{ expiry }}' type='date'></input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>Long Quantity: &nbsp</span>
+                    </div>
+                    <div class="col-3">
+                        <input class="param-input" id="long" placeholder='' value='{{ long }}' type='number'></input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>Cover Quantity: &nbsp</span>
+                    </div>
+                    <div class="col-3">
+                        <input class="param-input" id="cover" placeholder='' value='{{ cover }}' type='number'></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+{% endblock content %}
+
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"
+></script>
+
+<script>
+
+    function round_to(x, n) {
+        factor = 10**n
+        return Math.round(x * factor)/factor
+    }
+
+    $(".param-input").on("change", function() {
+        url = "{% url 'covered_call_viewer' %}"
+        url += "?product=" + $("#product").val() + "&strike=" + $("#strike").val() + "&expiry=" + $("#expiry").val() + "&long=" + $("#long").val() + "&cover=" + $("#cover").val()
+        window.location = url
+    })
+
+    const x = {{ x|safe }}
+    const y_long = {{ y_long|safe }}
+    const y_call = {{ y_call|safe }}
+    const y_combined = {{ y_combined|safe }}
+    const zero = Array(x.length).fill(0)
+
+    mx = Math.max( Math.max(...y_long), Math.max(...y_call), Math.max(...y_combined) )
+    mn = Math.min( Math.min(...y_long), Math.min(...y_call), Math.min(...y_combined) )
+
+    arrs = [y_long, y_call, y_combined, zero]
+
+    for (let i=0; i < arrs.length; i++) {
+        for (let j=0; j < arrs[i].length; j++) {
+            arrs[i][j] = { time: round_to(x[j], 2), value: round_to(arrs[i][j], 4) }
+        }
+    }
+
+    chart = LightweightCharts.createChart("graph_div", {
+        width: 900,
+        height: 600,
+        timeScale: {
+            tickMarkFormatter: (time, tickMarkType, locale) => {
+                return String(time)
+            },
+            timeVisible: false,
+            secondsVisible: false
+        },
+        rightPriceScale: {
+            scaleMargins: {
+                top: 0.01,
+                bottom: 0.01,
+            }
+        }
+    })
+
+    longSeries = chart.addLineSeries({
+        color: 'rgb(0, 155, 0)',
+    })
+    longSeries.setData(y_long)
+
+    callSeries = chart.addLineSeries({
+        color: 'rgb(155, 0, 0)',
+    })
+    callSeries.setData(y_call)
+
+    combinedSeries = chart.addLineSeries({
+        color: 'rgb(0, 0, 0)',
+        autoscaleInfoProvider: original => {
+            const res = original();
+            if (res != null) {
+                res.priceRange.minValue *= 0.9
+                res.priceRange.maxValue *= 1.1
+            }
+            return res
+        }
+    })
+    combinedSeries.setData(y_combined)
+
+    zeroSeries = chart.addLineSeries({
+        color: 'rgb(100, 100, 100)',
+        lineStyle: LightweightCharts.LineStyle.LargeDashed,
+    })
+    zeroSeries.setData(zero)
+
+    spotSeries = chart.addLineSeries({
+        color: 'rgb(100, 100, 100)',
+        lineStyle: LightweightCharts.LineStyle.Dashed,
+        priceScaleId: "vert",
+    })
+    spotSeries.setData([
+        { time: {{ spot }}, value: mn },
+        { time: {{ spot }}, value: mx },
+    ])
+    spotSeries.priceScale().applyOptions({
+        scaleMargins: {
+            top: 0.0,
+            bottom: 0.0,
+        }
+    })
+
+    chart.timeScale().fitContent()
+    $(document).ready(function() {
+        let range = chart.timeScale().getVisibleRange()
+        range = (range['to'] - range['from'])
+        chart.timeScale().setVisibleRange({ from: {{ spot|safe }} - range/2, to: {{ spot|safe }} + range/2 })
+    })
+
+
+</script>
+{% endblock scripts %}
