@@ -73,12 +73,12 @@ def graph_view(request):
     except Exception as e:
         print(e)
         context.update({
-            'spot': None,
+            'spot': 0,
             'x': [],
             'y_long': [],
             'y_call': [],
-            'label_long': None,
-            'label_call': None,
+            'label_long': 'null',
+            'label_call': 'null',
             'y_combined': [],
         })
 

@@ -65,7 +65,7 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-3">
-                        <button class="btn btn-primary btn-lg" onclick='window.location.reload()'>Refresh</button>
+                        <button class="btn btn-primary btn-lg" onclick='refresh()'>Refresh</button>
                     </div>
                 </div>
             </div>
@@ -88,11 +88,13 @@
         return Math.round(x * factor)/factor
     }
 
-    $(".param-input").on("change", function() {
+
+    function refresh() {
         url = "{% url 'covered_call_viewer' %}"
         url += "?product=" + $("#product").val() + "&strike=" + $("#strike").val() + "&expiry=" + $("#expiry").val() + "&long=" + $("#long").val() + "&cover=" + $("#cover").val()
         window.location = url
-    })
+    }
+    $(".param-input").on("change", refresh)
 
     const x = {{ x|safe }}
     const y_long = {{ y_long|safe }}
