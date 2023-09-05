@@ -8,8 +8,8 @@ from yahoo_fin import stock_info as yf
 
 import datetime
 import requests as rq
-from io import BytesIO
-import base64
+# from io import BytesIO
+# import base64
 
 sesh = None
 USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/116.0'
@@ -85,18 +85,18 @@ def graph_view(request):
     return render(request, 'marketdata/covered_call.html', context=context)
 
 
-def get_payoff_graph(U, K, P, long_q, cover_q):
+# def get_payoff_graph(U, K, P, long_q, cover_q):
 
-    op_list = [
-        {'type': 'u',              'side': 'b', 'price': U, 'size': long_q},
-        {'type': 'c', 'strike': K, 'side': 's', 'price': P, 'size': cover_q},
-    ]
+#     op_list = [
+#         {'type': 'u',              'side': 'b', 'price': U, 'size': long_q},
+#         {'type': 'c', 'strike': K, 'side': 's', 'price': P, 'size': cover_q},
+#     ]
 
-    fig = graph_utils.multi_plotter(spot=U,spot_range=25, op_list=op_list)
-    tmp = BytesIO()
-    fig.savefig(tmp, format='png')
-    encoded = base64.b64encode(tmp.getvalue()).decode('utf-8')
+#     fig = graph_utils.multi_plotter(spot=U,spot_range=25, op_list=op_list)
+#     tmp = BytesIO()
+#     fig.savefig(tmp, format='png')
+#     encoded = base64.b64encode(tmp.getvalue()).decode('utf-8')
 
-    graph_div = f'<img src=\'data:image\png;base64,{encoded}\'>'
+#     graph_div = f'<img src=\'data:image\png;base64,{encoded}\'>'
 
-    return graph_div
+#     return graph_div
