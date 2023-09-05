@@ -42,12 +42,14 @@ def graph_view(request):
     }
 
     try:
+        U = round(yf.get_live_price(product), 2)
+        context['spot'] = U
+
         tk = yahoo.options.Options(product, session=sesh)
         df = tk.get_call_data(expiry=expiry)
         df = df.reset_index()
         call = df[df['Strike'] == strike].iloc[0]
 
-        U = round(yf.get_live_price(product), 2)
         K = strike
         P = call['Bid']
 
@@ -60,20 +62,25 @@ def graph_view(request):
 
         x, (y_long, y_call), (label_long, label_call), combined = graph_utils.get_plots(U, op_list, spot_range=50)
 
+        capital_required = U*long
+        capital_withheld = capital_required - P*cover
+
         context.update({
-            'spot': U,
             'x': x.tolist(),
             'y_long': y_long.tolist(),
             'y_call': y_call.tolist(),
             'label_long': label_long,
             'label_call': label_call,
             'y_combined': combined.tolist(),
+            'capital_required': capital_required,
+            'capital_withheld': capital_withheld,
         })
 
     except Exception as e:
         print(e)
+        if 'spot' not in context:
+            context['spot'] = 0
         context.update({
-            'spot': 0,
             'x': [],
             'y_long': [],
             'y_call': [],

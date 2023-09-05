@@ -63,6 +63,22 @@
                         <input class="param-input" id="cover" placeholder='' value='{{ cover }}' type='number'></input>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>Capital Required: &nbsp</span>
+                    </div>
+                    <div class="col-3">
+                        <span class="h6">{{ capital_required }}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>Capital Held: &nbsp</span>
+                    </div>
+                    <div class="col-3">
+                        <span class="h6">{{ capital_withheld }}</span>
+                    </div>
+                </div>
                 <div class="row mt-3">
                     <div class="col-3">
                         <button class="btn btn-primary btn-lg" onclick='refresh()'>Refresh</button>
