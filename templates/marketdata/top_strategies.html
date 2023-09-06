@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Options Strategy Ranker{% endblock title %}
+
+{% block content %}
+
+    <section class="section pt-3" style="background-color: #000000"></section>
+    
+    <section class="section">
+
+        <div class="row">
+            <div class="col">
+                <h2 class='text-center'>Options Strategy Ranker</h2>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <table class="table">
+
+                <thead>
+
+                    <th>PNL</th>
+                    <th>Symbol</th>
+                    <th>Strike</th>
+                    <th>Underlying</th>
+
+                </thead>
+                <tbody>
+
+                    {% for row in data %}
+                        <tr>
+                            {% for col_val in row %}
+                                <td>{{ col_val }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </section>
+
+{% endblock content %}
+
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"
+></script>
+
+<script>
+
+
+</script>
+{% endblock scripts %}
