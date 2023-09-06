@@ -25,7 +25,7 @@ def graph_view(request):
         })
 
     product = request.GET.get('product', 'AMZN')
-    strike = int(request.GET.get('strike', 130))
+    strike = float(request.GET.get('strike', 130))
     expiry_str = request.GET.get('expiry', '2023-09-08')
     long = int(request.GET.get('long', 100))
     cover = int(request.GET.get('cover', 100))
