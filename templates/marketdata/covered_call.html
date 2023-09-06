@@ -80,8 +80,11 @@
                     </div>
                 </div>
                 <div class="row mt-3">
-                    <div class="col-3">
+                    <div class="col-auto">
                         <button class="btn btn-primary btn-lg" onclick='refresh()'>Refresh</button>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary btn-lg" onclick="window.location = '{% url 'strategy_rankings' %}'">Meta</button>
                     </div>
                 </div>
             </div>

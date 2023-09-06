@@ -29,10 +29,13 @@ def strategy_ranker(request):
     symbols = request.GET.getlist('symbols', ['AAPL', 'AMZN', 'CRWD', 'GOOGL', 'KO'])
     expiry_str = request.GET.get('expiry', '2023-09-08')
     expiry = datetime.datetime.strptime(expiry_str, '%Y-%m-%d')
+    U = request.GET.get('spot', None)
+    if U:
+        U = float(U)
 
     Q = request.GET.get('quantity', 100)
 
-    dfs = [get_covered_call_rankings(symbol, expiry, Q) for symbol in symbols]
+    dfs = [get_covered_call_rankings(symbol, expiry, Q, U) for symbol in symbols]
     df = pd.concat(dfs)
     df = df.sort_values('PNL', ascending=False)
     df = df.round(4)
@@ -40,6 +43,7 @@ def strategy_ranker(request):
     data = df[['PNL', 'Underlying', 'Strike', 'Underlying_Price']].iloc[:50].values.tolist()
 
     context['data'] = data
+    context['expiry'] = expiry_str
 
     return render(request, 'marketdata/top_strategies.html', context=context)
 

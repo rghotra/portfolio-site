@@ -29,6 +29,7 @@ def graph_view(request):
     expiry_str = request.GET.get('expiry', '2023-09-08')
     long = int(request.GET.get('long', 100))
     cover = int(request.GET.get('cover', 100))
+    U = request.GET.get('spot', None)
 
     expiry = datetime.datetime.strptime(expiry_str, '%Y-%m-%d')
 
@@ -42,7 +43,8 @@ def graph_view(request):
     }
 
     try:
-        U = round(yf.get_live_price(product), 2)
+        U = U or round(yf.get_live_price(product), 2)
+        U = float(U)
         context['spot'] = U
 
         tk = yahoo.options.Options(product, session=sesh)
