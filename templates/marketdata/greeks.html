@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Call Historical Greeks{% endblock title %}
+
+{% block content %}
+
+    <section class="section pt-3" style="background-color: #000000"></section>
+    
+    <section class="section">
+
+        <div class="row">
+            <div class="col">
+                <h2 class='text-center'>Call Historical Greeks</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-auto">
+                <span>Symbol:&nbsp</symbol>
+                <input id="symbol" class='param-input' placeholder='Symbol' value='{{ symbol }}'></input>
+            </div>
+            <div class="col-auto">
+                <span>Strike:&nbsp</symbol>
+                <input id="strike" class='param-input' placeholder='Strike' value='{{ strike }}' type='number'></input>
+            </div>
+            <div class="col-auto">
+                <span>Expiry:&nbsp</symbol>
+                <input id="expiry" class='param-input' placeholder='Expiry' value='{{ expiry }}' type='date'></input>
+            </div>
+            <div class="col-auto">
+                <span>Start:&nbsp</symbol>
+                <input id="start" class='param-input' placeholder='Start' value='{{ start }}' type='date'></input>
+            </div>
+            <div class="col-auto">
+                <span>End:&nbsp</symbol>
+                <input id="end" class='param-input' placeholder='End' value='{{ end }}' type='date'></input>
+            </div>
+            <div class="col-auto">
+                <button id="payoff" class='btn btn-primary btn-sm' onclick="redirectToChart()">Payoff</button>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <table class="table table-striped table-hover">
+
+                <thead class='thead thead-light'>
+
+                    <th>Date</th>
+                    <th>Spot Price</th>
+                    <th>Call Price</th>
+                    <th>IV</th>
+                    <th>Delta</th>
+                    <th>Gamma</th>
+                    <th>Theta</th>
+                    <th>Vega</th>
+                    <th>RV</th>
+                    <th>Underlying Volume</th>
+                    <th>Call Volume</th>
+
+                </thead>
+                <tbody>
+
+                    {% for row in data %}
+                        <tr>
+                            {% for col_val in row %}
+                                <td>{{ col_val }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </section>
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script>
+
+    function refresh() {
+        url = "{% url 'historical_greeks' %}"
+        url += "?symbol=" + $("#symbol").val() + "&strike=" + $("#strike").val() + "&expiry=" + $("#expiry").val() + "&start=" + $("#start").val() + "&end=" + $("#end").val()
+        window.location = url
+    }
+    $(".param-input").on("change", refresh)
+
+    function redirectToChart(row) {
+        url = "{% url 'covered_call_viewer' %}"
+        url += "?product={{ symbol }}&strike={{ strike }}&expiry={{ expiry }}"
+        window.location = url 
+    }
+
+</script>
+{% endblock scripts %}

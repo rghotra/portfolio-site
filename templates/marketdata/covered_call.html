@@ -86,6 +86,9 @@
                     <div class="col-auto">
                         <button class="btn btn-primary btn-lg" onclick="window.location = '{% url 'strategy_rankings' %}'">Meta</button>
                     </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary btn-lg" onclick="redirectToGreeks()">Greeks</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,6 +110,12 @@
         return Math.round(x * factor)/factor
     }
 
+
+    function redirectToGreeks(row) {
+        url = "{% url 'historical_greeks' %}"
+        url += "?symbol={{ product }}&strike={{ strike }}&expiry={{ expiry }}"
+        window.location = url 
+    }
 
     function refresh() {
         url = "{% url 'covered_call_viewer' %}"
