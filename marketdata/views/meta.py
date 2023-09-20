@@ -27,7 +27,7 @@ def strategy_ranker(request):
     context = {}
 
     symbols = request.GET.getlist('symbols', ['AAPL', 'AMZN', 'CRWD', 'GOOGL', 'KO'])
-    expiry_str = request.GET.get('expiry', '2023-09-08')
+    expiry_str = request.GET.get('expiry', '2023-12-15')
     expiry = datetime.datetime.strptime(expiry_str, '%Y-%m-%d')
     U = request.GET.get('spot', None)
     if U:
