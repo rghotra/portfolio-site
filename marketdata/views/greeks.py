@@ -95,8 +95,8 @@ def get_greeks_table(symbol, expiry, strike, start, end):
 
     df['B&S IV'] = vol = np.sqrt(2*np.pi/r)*df['call']/df['underlying']
 
-    iv_calc = lambda S, *vol: iv_finder(S, strike, r, t, np.array(vol))
-    vol, _ = curve_fit(iv_calc, df['underlying'], df['call'], p0=vol)
+    iv_calc = lambda S, vol: iv_finder(S, strike, r, t, vol)
+    vol = np.array([ curve_fit(iv_calc, [df['underlying'][i]], [df['call'][i]], p0=[vol[i]])[0][0] for i in range(len(df)) ])
     df['IV'] = vol
 
 
