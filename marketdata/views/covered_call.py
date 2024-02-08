@@ -48,6 +48,7 @@ def graph_view(request):
         context['spot'] = U
 
         tk = yahoo.options.Options(product, session=sesh)
+        tk._OPTIONS_BASE_URL = tk._OPTIONS_BASE_URL.replace('v7', 'v6')
         df = tk.get_call_data(expiry=expiry)
         df = df.reset_index()
         call = df[df['Strike'] == strike].iloc[0]

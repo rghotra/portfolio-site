@@ -53,6 +53,7 @@ def get_covered_call_rankings(symbol, expiry, Q, U=None):
     U = U or round(yf.get_live_price(symbol), 2)
 
     tk = yahoo.options.Options(symbol, session=sesh)
+    tk._OPTIONS_BASE_URL = tk._OPTIONS_BASE_URL.replace('v7', 'v6')
     df = tk.get_call_data(expiry=expiry)
     df = df.reset_index()
 
